@@ -1,0 +1,15 @@
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\TempMajic.exe.config
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\TempMajic.exe
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\TempMajic.pdb
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\TempMajic.xml
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\Mono.Security.dll
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\Npgsql.dll
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\Npgsql.pdb
+D:\TempMajic\tempmajic_svn\TempMajic\bin\Release\Npgsql.xml
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\ResolveAssemblyReference.cache
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.Dialogconnection.resources
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.Resources.resources
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.vbproj.GenerateResource.Cache
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.exe
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.xml
+D:\TempMajic\tempmajic_svn\TempMajic\obj\Release\TempMajic.pdb
