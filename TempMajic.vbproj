@@ -116,6 +116,9 @@
     <Compile Include="IM_ListeTempProprio.vb" />
     <Compile Include="IM_MajicPDL.vb" />
     <Compile Include="IM_TempAdresse.vb" />
+    <Compile Include="IM_TempArt40.vb" />
+    <Compile Include="IM_TempArt50.vb" />
+    <Compile Include="IM_TempArt60.vb" />
     <Compile Include="IM_TempLocal.vb" />
     <Compile Include="IM_TempLotLocal.vb" />
     <Compile Include="IM_TempParcelle.vb" />

@@ -101,7 +101,7 @@ Public Class IM_TempPEV
 
         Dim sql1 As String = "INSERT INTO " & SchemaName & ".temppev (ptrlocal," _
         & " numpev,affectation,categorie,vl70,vlactu,exop" _
-        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6);"
+        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6) RETURNING idtemppev;"
 
         Dim cmd As New NpgsqlCommand(sql1, cnngen)
         cmd.Parameters.Clear()
@@ -120,8 +120,8 @@ Public Class IM_TempPEV
         cmd.Parameters.Add(p5)
         Dim p6 As New NpgsqlParameter("p6", mExoP)
         cmd.Parameters.Add(p6)
-        Enregistre = cmd.ExecuteNonQuery
-
+        mIdPEV = cmd.ExecuteScalar
+        Enregistre = mIdPEV
         cmd.Dispose()
     End Function
 End Class

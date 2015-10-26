@@ -403,6 +403,7 @@ Public Class IM_TempLocal
 
         mID_Local = cmd.ExecuteScalar
         Enregistre = mID_Local
+        cmd.Dispose()
     End Function
     Public Sub Affecte(ByVal ligne As String, ByVal ligne10 As String)
 

@@ -143,14 +143,14 @@ Public Class IM_TempAdresse
 
         ligne = ligne.Replace(Chr(34), "_")
         mDepartement = ligne.Substring(0, 2)
-        mInsee = ligne.Substring(3, 3)
+        mInsee = ligne.Substring(2, 3)
         mIdendifiant = ligne.Substring(6, 4)
         mClefRivoli = ligne.Substring(10, 1)
         mNatureVoie = ligne.Substring(11, 4)
         mLibelle = ligne.Substring(15, 26)
         mVoiePublique = ligne.Substring(48, 1)
         mDateCreation = ligne.Substring(81, 7)
-        'mCodeMajic = ligne.Substring(103, 5)
+        mCodeMajic = ligne.Substring(103, 5)
         'mTypeVoie = ligne.Substring(108, 1)
         'mBati = ligne.Substring(109, 1)
 
@@ -167,13 +167,13 @@ Public Class IM_TempAdresse
         mVoiePublique = row("voiepublique")
         mDateCreation = row("datecreation")
         mCodeMajic = row("codemajic")
-        mTypeVoie = row("typevoie")
-        mBati = row("bati")
+        'mTypeVoie = row("typevoie")
+        'mBati = row("bati")
 
     End Sub
     Public Function Enregistre()
-        Dim sql1 As String = "INSERT INTO TempAdresse ( Departement, Insee, Identifiant, ClefRivoli, NatureVoie," _
-        & " Libelle, VoiePublique, DateCreation, CodeMajic, TypeVoie, Bati) VALUES (:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9,:p10,:p11);"
+        Dim sql1 As String = "INSERT INTO " & SchemaName & ".TempAdresse ( Departement, Insee, Identifiant, ClefRivoli, NatureVoie," _
+        & " Libelle, VoiePublique, DateCreation, CodeMajic) VALUES (:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9);"
 
         Dim cmd As New NpgsqlCommand(sql1, cnngen)
         cmd.Parameters.Clear()
@@ -196,10 +196,10 @@ Public Class IM_TempAdresse
         cmd.Parameters.Add(p8)
         Dim p9 As New NpgsqlParameter("p9", mCodeMajic)
         cmd.Parameters.Add(p9)
-        Dim p10 As New NpgsqlParameter("p10", mTypeVoie)
-        cmd.Parameters.Add(p10)
-        Dim p11 As New NpgsqlParameter("p11", mBati)
-        cmd.Parameters.Add(p11)
+        'Dim p10 As New NpgsqlParameter("p10", mTypeVoie)
+        'cmd.Parameters.Add(p10)
+        'Dim p11 As New NpgsqlParameter("p11", mBati)
+        'cmd.Parameters.Add(p11)
 
         Enregistre = cmd.ExecuteNonQuery
     End Function

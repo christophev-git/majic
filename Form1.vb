@@ -17,14 +17,23 @@ Public Class Form1
 
         Dim d As String = InputBox("Millesime des données ?", "")
         If d = "" Then
-            MsgBox("Impossible d'intégrer des données sans millesime", MsgBoxStyle.Critical)
-            Exit Sub
+            If SchemaName <> "" Then
+                If MsgBox("Intgegration dans le schema : " & SchemaName, MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                    d = SchemaName
+                End If
+
+            Else
+                MsgBox("Impossible d'intégrer des données sans millesime", MsgBoxStyle.Critical)
+                Exit Sub
+            End If
+        Else
+            d = "majic" & d
         End If
         Dim m_cmd As New NpgsqlCommand
         m_cmd = New NpgsqlCommand
         m_cmd.Connection = CnnGen
         m_cmd.CommandText = "SELECT schema_name FROM information_schema.schemata WHERE schema_name=:p;"
-        Dim p As New NpgsqlParameter("p", "majic" & d)
+        Dim p As New NpgsqlParameter("p", d)
         m_cmd.Parameters.Add(p)
         Dim m_da As New NpgsqlDataAdapter
         Dim m_ds As New System.Data.DataSet
@@ -33,13 +42,13 @@ Public Class Form1
 
 
         If m_ds.Tables(0).Rows.Count = 0 Then
-            m_cmd.CommandText = "CREATE SCHEMA majic" & d & ";"
+            m_cmd.CommandText = "CREATE SCHEMA " & d & ";"
             m_cmd.ExecuteNonQuery()
 
         End If
 
 
-        SchemaName = "majic" & d
+        SchemaName = d
 
         m_da.Dispose()
         m_cmd.Dispose()
@@ -89,6 +98,14 @@ Public Class Form1
         If OpenFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
             Dim Maj As New MAJIC_TextFile
             Maj.PopulateTempLotLocal(OpenFileDialog1.FileName)
+        End If
+    End Sub
+
+    Private Sub FantoirToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FantoirToolStripMenuItem.Click
+        initschema()
+        If OpenFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim Maj As New MAJIC_TextFile
+            Maj.PopulateTempAdresse(OpenFileDialog1.FileName)
         End If
     End Sub
 End Class
