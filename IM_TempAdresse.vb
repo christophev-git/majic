@@ -143,7 +143,7 @@ Public Class IM_TempAdresse
 
         ligne = ligne.Replace(Chr(34), "_")
         mDepartement = ligne.Substring(0, 2)
-        mInsee = ligne.Substring(2, 3)
+        mInsee = ligne.Substring(3, 3)
         mIdendifiant = ligne.Substring(6, 4)
         mClefRivoli = ligne.Substring(10, 1)
         mNatureVoie = ligne.Substring(11, 4)
