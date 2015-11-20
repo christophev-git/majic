@@ -102,6 +102,7 @@
     <Compile Include="Dialogconnection.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DVF_TextFile.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +144,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TempDVF.vb" />
     <Compile Include="VariableGlobale.vb" />
   </ItemGroup>
   <ItemGroup>
