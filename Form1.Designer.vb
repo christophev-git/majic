@@ -32,12 +32,14 @@ Partial Class Form1
         Me.LotLocauxToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FantoirToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
+        Me.DvfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IntégrationTempToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GestionToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GestionToolStripMenuItem, Me.DvfToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(8, 2, 0, 2)
@@ -98,6 +100,19 @@ Partial Class Form1
         '
         Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
+        'DvfToolStripMenuItem
+        '
+        Me.DvfToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.IntégrationTempToolStripMenuItem})
+        Me.DvfToolStripMenuItem.Name = "DvfToolStripMenuItem"
+        Me.DvfToolStripMenuItem.Size = New System.Drawing.Size(40, 23)
+        Me.DvfToolStripMenuItem.Text = "dvf"
+        '
+        'IntégrationTempToolStripMenuItem
+        '
+        Me.IntégrationTempToolStripMenuItem.Name = "IntégrationTempToolStripMenuItem"
+        Me.IntégrationTempToolStripMenuItem.Size = New System.Drawing.Size(181, 24)
+        Me.IntégrationTempToolStripMenuItem.Text = "intégration temp"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -105,7 +120,7 @@ Partial Class Form1
         Me.ClientSize = New System.Drawing.Size(985, 322)
         Me.Controls.Add(Me.MenuStrip1)
         Me.MainMenuStrip = Me.MenuStrip1
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "Form1"
         Me.Text = "Form1"
         Me.MenuStrip1.ResumeLayout(False)
@@ -124,5 +139,7 @@ Partial Class Form1
     Friend WithEvents LotLocauxToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents FantoirToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
+    Friend WithEvents DvfToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents IntégrationTempToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
