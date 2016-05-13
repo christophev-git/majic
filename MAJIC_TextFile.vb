@@ -78,19 +78,21 @@ Public Class MAJIC_TextFile
         Dim tempparc As New IM_TempParcelle
 
         Using sr As New System.IO.StreamReader(nomfichier)
+            sr.ReadLine()
             Do While Not sr.EndOfStream
                 Dim ligne As String = sr.ReadLine
+                If ligne.Length > 20 Then
+                    If ligne.Substring(19, 2) = "10" Then
+                        tempparc = New IM_TempParcelle(ligne)
+                        tempparc.Enregistre()
+                    End If
 
-                If ligne.Substring(19, 2) = "10" Then
-                    tempparc = New IM_TempParcelle(ligne)
-                    tempparc.Enregistre()
-                End If
-
-                If ligne.Substring(19, 2) = "21" Then
-                    Dim tempsurf As New IM_TempSurface
-                    tempsurf.Affecte(ligne)
-                    tempsurf.Enregistre(tempparc.ID_TempParcelle)
-                End If
+                    If ligne.Substring(19, 2) = "21" Then
+                        Dim tempsurf As New IM_TempSurface
+                        tempsurf.Affecte(ligne)
+                        tempsurf.Enregistre(tempparc.ID_TempParcelle)
+                    End If
+                    end if
 
 
             Loop
@@ -113,20 +115,21 @@ Public Class MAJIC_TextFile
         Dim tempPDL As New IM_MajicPDL
 
         Using SR As New System.IO.StreamReader(nomfichier)
+            SR.ReadLine()
             Do While Not SR.EndOfStream
                 Dim ligne As String = SR.ReadLine
+                If ligne.Length > 26 Then
+                    If ligne.Substring(25, 2) = "10" Then
+                        tempPDL = New IM_MajicPDL(ligne)
+                        tempPDL.Enregistre()
+                    End If
 
-                If ligne.Substring(25, 2) = "10" Then
-                    tempPDL = New IM_MajicPDL(ligne)
-                    tempPDL.Enregistre()
+                    If ligne.Substring(25, 2) = "30" Then
+                        Dim templot As New IM_Temppdl
+                        templot.Affecte(ligne)
+                        templot.Enregistre(tempPDL.ID_MajicPDL)
+                    End If
                 End If
-
-                If ligne.Substring(25, 2) = "30" Then
-                    Dim templot As New IM_Temppdl
-                    templot.Affecte(ligne)
-                    templot.Enregistre(tempPDL.ID_MajicPDL)
-                End If
-
             Loop
         End Using
 
@@ -151,10 +154,13 @@ Public Class MAJIC_TextFile
             SR.ReadLine()
             Do While Not SR.EndOfStream
                 Dim ligne As String = SR.ReadLine
+                If Trim(ligne.Substring(6, 10)) = "" Then
+                Else
+                    tempprop = New IM_TempProprio(ligne, "")
+                    tempprop.Enregistre()
+                End If
 
-
-                tempprop = New IM_TempProprio(ligne, "")
-                tempprop.Enregistre()
+                
 
 
             Loop
@@ -184,43 +190,53 @@ Public Class MAJIC_TextFile
             ligne = SR.ReadLine
             Do While Not SR.EndOfStream
 
-                If ligne.Substring(30, 2) = "00" Then
-                    Dim ligne10 As String = SR.ReadLine
-                    temploc = New IM_TempLocal
-                    temploc.Affecte(ligne, ligne10)
-                    temploc.Enregistre()
-                End If
-                ligne = SR.ReadLine()
-                Do While temploc.Invariant = ligne.Substring(6, 10)
-                    If ligne.Substring(30, 2) = "21" Then
-                        temppev = New IM_TempPEV
-                        temppev.affecte(ligne, temploc.ID_TempLocal)
-                        temppev.Enregistre()
-
+                If ligne.Length > 32 Then
+                    If ligne.Substring(30, 2) = "00" Then
+                        Dim ligne10 As String = SR.ReadLine
+                        temploc = New IM_TempLocal
+                        temploc.Affecte(ligne, ligne10)
+                        temploc.Enregistre()
                     End If
-
-                    If ligne.Substring(30, 2) = "40" Then
-                        tempart40 = New IM_TempArt40
-                        tempart40.Affecte(ligne, temppev.IdPEV)
-                        tempart40.Enregistre()
-                    End If
-
-                    If ligne.Substring(30, 2) = "50" Then
-                        tempart50 = New IM_TempArt50
-                        tempart50.Affecte(ligne, temppev.IdPEV)
-                        tempart50.Enregistre()
-                    End If
-
-                    If ligne.Substring(30, 2) = "60" Then
-                        tempart60 = New IM_TempArt60
-                        tempart60.Affecte(ligne, temppev.IdPEV)
-                        tempart60.Enregistre()
-                    End If
+                    ligne = SR.ReadLine()
+                    Do While temploc.Invariant = ligne.Substring(6, 10)
 
 
+
+
+                        If ligne.Substring(30, 2) = "21" Then
+                            temppev = New IM_TempPEV
+                            temppev.affecte(ligne, temploc.ID_TempLocal)
+                            temppev.Enregistre()
+
+                        End If
+
+                        If ligne.Substring(30, 2) = "40" Then
+                            tempart40 = New IM_TempArt40
+                            tempart40.Affecte(ligne, temppev.IdPEV)
+                            tempart40.Enregistre()
+                        End If
+
+                        If ligne.Substring(30, 2) = "50" Then
+                            tempart50 = New IM_TempArt50
+                            tempart50.Affecte(ligne, temppev.IdPEV)
+                            tempart50.Enregistre()
+                        End If
+
+                        If ligne.Substring(30, 2) = "60" Then
+                            tempart60 = New IM_TempArt60
+                            tempart60.Affecte(ligne, temppev.IdPEV)
+                            tempart60.Enregistre()
+                        End If
+
+
+                        ligne = SR.ReadLine
+                        If SR.EndOfStream Then Exit Do
+
+                    Loop
+                Else
                     ligne = SR.ReadLine
-                    If SR.EndOfStream Then Exit Do
-                Loop
+                End If
+
             Loop
         End Using
 
@@ -279,10 +295,13 @@ Public Class MAJIC_TextFile
             '****************************
             Do While Not SR.EndOfStream
                 Dim ligne As String = SR.ReadLine
+                If Trim(ligne.Substring(6, 10)) = "" Then
+                Else
 
+                    templc = New IM_TempLotLocal(ligne)
+                    templc.Enregistre()
+                End If
 
-                templc = New IM_TempLotLocal(ligne)
-                templc.Enregistre()
             Loop
         End Using
     End Sub
