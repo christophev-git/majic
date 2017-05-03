@@ -1,18 +1,35 @@
 ﻿-- ajoute une colonne etat à tempparcelle
+-- ajoute une colonne codei code integration à parcelle
 
 ALTER TABLE majic2015.tempparcelle
    ADD COLUMN etat integer NOT NULL DEFAULT 0;
-
+ALTER TABLE majic2015.parcelle 
+	ADD COLUMN codei integer NOT NULL DEFAULT 0;
+	
 BEGIN;
 -- Remplacer section majic " A" par section majic2015 "0A"
 
 update majic2015.tempparcelle set
 section= replace(section,' ','0');
 
+update majic2015.tempparcelle set
+section2= replace(section2,' ','0');
+
+update majic2015.tempparcelle set
+sectionmere= replace(sectionmere,' ','0');
+
 -- Remplacer prefsection par 000 si null------------------------------------------------
 
 UPDATE majic2015.tempparcelle SET
 prefsec='000' WHERE trim(prefsec)='';
+
+UPDATE majic2015.tempparcelle SET
+pref2='000' WHERE trim(pref2)='';
+
+UPDATE majic2015.tempparcelle SET
+prefsecmere='000' WHERE trim(prefsecmere)='';
+
+
 
 -- Ajouter un index sur idtempparcelle (primarykey)
 
@@ -42,8 +59,8 @@ WHERE tempparcelle.idtempparcelle=temp.idtempparcelle;
 
 -- Verifie l'existence des parcelles
 -- ATTENTION si parcelle NFP la parcelle est existante cf etape suivante ********************************************************
--- Etat = 2  parcelle n'existe pas (commune et section existe)
--- Etat = 3 la parcelle existe ou NFP
+-- Etat = 2  parcelle n'existe pas (commune et section existe) au plan OU EST NFP OU EXISTE AU PLAN ET PAS DANS majic
+-- Etat = 5 la parcelle existe DANS majic ET AU PLAN
 -- Execution = 3 mm 11
 
 with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where ptrcommune = idcommune and ptrsection = idsection ),
@@ -54,9 +71,13 @@ and ptrsubsection = idsubsection),
 res as (SELECT idtempparcelle FROM parc,majic2015.tempparcelle WHERE etat=2 AND parc.insee=tempparcelle.insee AND parc.nom=tempparcelle.section AND substring(nomsub,4,3)=prefsec AND parc.numero=tempparcelle.plan)
 
 UPDATE majic2015.tempparcelle SET
-etat=3
+etat=5
 FROM res
 WHERE res.idtempparcelle=tempparcelle.idtempparcelle;
+
+
+-- Si NFP pas pris en compte !!!!!
+
 
 --************************************************************** Ajout des parcelles NFP de code 2 ************************************************************
 -- Elles seront ajoutées à la fin du traitement de tempparcelle
@@ -64,13 +85,13 @@ WHERE res.idtempparcelle=tempparcelle.idtempparcelle;
 
 --*************************************************************************************************************************************************************
 
--- UPDATE de la table parcelle avec tempparcelle =3
+-- UPDATE de la table parcelle avec tempparcelle =5 présente au plan dans MAJIC et non nfp
 -- execution 2 mm
 
-with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where  ptrcommune = idcommune and ptrsection = idsection ),res as (
-
-select parcelle.idparcelle,tempparcelle.* from majic2015.parcelle,sec,majic2015.tempparcelle where ptrsubsection in (select idsubsection from majic2015.commune,majic2015.section,majic2015.subsection where  ptrcommune=idcommune and ptrsection = idsection )
-and etat=3 AND ptrsubsection = idsubsection AND sec.insee=tempparcelle.insee AND sec.nom=tempparcelle.section AND substring(nomsub,4,3)=prefsec AND numero=plan)
+with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where  ptrcommune = idcommune and ptrsection = idsection ),
+res as (select parcelle.idparcelle,tempparcelle.* from majic2015.parcelle,sec,majic2015.tempparcelle 
+where ptrsubsection in (select idsubsection from majic2015.commune,majic2015.section,majic2015.subsection where  ptrcommune=idcommune and ptrsection = idsection )
+and etat=5 AND ptrsubsection = idsubsection AND sec.insee=tempparcelle.insee AND sec.nom=tempparcelle.section AND substring(nomsub,4,3)=prefsec AND numero=plan)
 
 UPDATE majic2015.parcelle SET 
 contenance =res.contenance::integer,
@@ -86,18 +107,19 @@ prefsecmere=res.prefsecmere,
 sectionmere=res.sectionmere,
 numplanmere=res.numplanmere,
 typefiliation=res.typefiliation
+codei=res.etat
 FROM res WHERE parcelle.idparcelle=res.idparcelle
 ;
 
 
 --***********************************************************************************
---************************************************************** Ajout des parcelles NFP de code 2 ************************************************************
+--************************************************************** Ajout des parcelles NFP  ************************************************************
 
 -- !!!! Prendre en compte la première subsection de la section pour pointeur ptrsubsection
 -- !! conversion de type integer et boolean
+-- Parcelle nfp codei=4
 -- Execution 5 s
 --*************************************************************************************************************************************************************
-
 
 
 
@@ -105,10 +127,34 @@ WITH subsec as (SELECT insee,section.nom, first_value(idsubsection) OVER (PARTIT
 FROM majic2015.commune,majic2015.section,majic2015.subsection WHERE ptrcommune = idcommune and ptrsection = idsection ORDER BY insee,section.nom),
 agg as (SELECT * FROM subsec GROUP BY insee,nom,first_value ORDER BY insee,nom),
 temp as (SELECT * FROM majic2015.tempparcelle WHERE etat=2 AND nfp='1' ORDER BY insee),
-res as (SELECT first_value ,plan,contenance::integer,dateacte,primitive,not length(trim(arpente)) = 0,nfp::boolean,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation  FROM agg,temp WHERE temp.insee=agg.insee AND temp.section=agg.nom)
+res as (SELECT first_value ,plan,contenance::integer,dateacte,primitive,not length(trim(arpente)) = 0,
+nfp::boolean,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation,4  
+FROM agg,temp WHERE temp.insee=agg.insee AND temp.section=agg.nom)
 
-INSERT INTO majic2015.parcelle (ptrsubsection,numero,contenance,dateacte,primitive,arpente,nfp,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation) 
+INSERT INTO majic2015.parcelle (ptrsubsection,numero,contenance,dateacte,primitive,arpente,nfp,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation,codei) 
 SELECT * FROM res;
+
+--*********************************************************************************************
+--************************************* Ajout parcelle etat 2 non nfp --- codei=2 present dans majic pas au plan et non nfp-----------------------------
+--*****************************
+
+WITH subsec as (SELECT insee,section.nom, first_value(idsubsection) OVER (PARTITION BY insee,section.nom ORDER BY idsubsection ASC ) 
+FROM majic2015.commune,majic2015.section,majic2015.subsection WHERE ptrcommune = idcommune and ptrsection = idsection ORDER BY insee,section.nom),
+agg as (SELECT * FROM subsec GROUP BY insee,nom,first_value ORDER BY insee,nom),
+temp as (SELECT * FROM majic2015.tempparcelle WHERE etat=2 AND nfp='0' ORDER BY insee),
+res as (SELECT first_value ,plan,contenance::integer,dateacte,primitive,not length(trim(arpente)) = 0,
+nfp::boolean,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation,2  
+FROM agg,temp WHERE temp.insee=agg.insee AND temp.section=agg.nom)
+
+INSERT INTO majic2015.parcelle (ptrsubsection,numero,contenance,dateacte,primitive,arpente,nfp,numvoie,voiemajic,rivoli,inseemere,prefsecmere,sectionmere,numplanmere,typefiliation,codei) 
+SELECT * FROM res;
+
+--**************************************************************************************************
+--*************************** AJOUT des parcelles au plan et pas dans MAJIC codei=3**************************
+
+with res AS (SELECT idparcelle FROM majic2015.parcelle WHERE codei=0)
+UPDATE majic2015.parcelle SET codei=3 FROM res WHERE res.idparcelle=idparcelle;
+
 
 -- Création table surface -------------
 CREATE TABLE IF NOT EXISTS majic2015.surface
@@ -185,14 +231,14 @@ ALTER TABLE majic2015.lot
   OWNER TO postgres;
 
 
--- Integration des lots fictifs pour GPDL=0
+-- Integration des lots fictifs pour GPDL=0 et gpdl=2
 -- Execution: 54 s
 
 with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where ptrcommune = idcommune and ptrsection = idsection ),
 parc as (select insee,nom,numero,idsubsection,nomsub,idparcelle,contenance from majic2015.parcelle,sec 
 where ptrsubsection in (select idsubsection from majic2015.commune,majic2015.section,majic2015.subsection where ptrcommune=idcommune and ptrsection = idsection)
 and ptrsubsection = idsubsection),
-res as (SELECT parc.idparcelle,parc.contenance, comptecom FROM parc,majic2015.tempparcelle WHERE gpdl='0' AND etat>1 AND parc.insee=tempparcelle.insee AND parc.nom=tempparcelle.section AND substring(parc.nomsub,4,3)=prefsec  AND parc.numero=tempparcelle.plan)
+res as (SELECT parc.idparcelle,parc.contenance, comptecom FROM parc,majic2015.tempparcelle WHERE (gpdl='0' or gpdl='2') AND etat>1 AND parc.insee=tempparcelle.insee AND parc.nom=tempparcelle.section AND substring(parc.nomsub,4,3)=prefsec  AND parc.numero=tempparcelle.plan)
 
 INSERT INTO majic2015.lot (ptrparcelle,comptecom,surfacelot,numlot,numerateur,denominateur,numpdl) SELECT idparcelle,comptecom,contenance,'0000000','*','*','000' FROM res;
 
@@ -212,7 +258,8 @@ with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, secti
 parc as (select insee,nom,numero,idsubsection,nomsub,idparcelle,contenance from majic2015.parcelle,sec 
 where ptrsubsection in (select idsubsection from majic2015.commune,majic2015.section,majic2015.subsection where ptrcommune=idcommune and ptrsection = idsection)
 and ptrsubsection = idsubsection),
-res as (SELECT parc.idparcelle, temppdl.comptecom,contenance,'0000000','*','*',temppdl.numpdl,pdltype FROM parc,majic2015.temppdl WHERE  parc.insee=temppdl.insee AND parc.nom=temppdl.section AND substring(nomsub,4,3)=prefsec AND parc.numero=temppdl.plan)
+res as (SELECT parc.idparcelle, temppdl.comptecom,contenance,'0000000','*','*',temppdl.numpdl,pdltype FROM parc,majic2015.temppdl 
+WHERE  parc.insee=temppdl.insee AND parc.nom=temppdl.section AND substring(nomsub,4,3)=prefsec AND parc.numero=temppdl.plan)
 
 INSERT INTO majic2015.lot (ptrparcelle,comptecom,surfacelot,numlot,numerateur,denominateur,numpdl,pdltype) SELECT * FROM res;
 
@@ -229,7 +276,24 @@ res2 as (SELECT idparcelle,comptecomlot,numlot,naturelot::integer,surfacelot::in
 
 INSERT INTO majic2015.lot (ptrparcelle,comptecom,numlot,naturelot,surfacelot,numerateur,denominateur,dateactelot,numpdl,pdltype) SELECT * FROM res2;
 
---**** Gestion GPDL = 2 ******
+--**** Gestion GPDL = 2 mise à jour pointeur parcelle******
+with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where ptrcommune = idcommune and ptrsection = idsection ),
+parc as (select insee,nom,numero,idsubsection,nomsub,idparcelle,contenance from majic2015.parcelle,sec 
+where ptrsubsection in (select idsubsection from majic2015.commune,majic2015.section,majic2015.subsection where ptrcommune=idcommune and ptrsection = idsection)
+and ptrsubsection = idsubsection),
+res1 as (SELECT parc.idparcelle as idparcelle,idtempparcelle as idt1 FROM parc,majic2015.tempparcelle WHERE  gpdl='2' AND etat>1 AND parc.insee=tempparcelle.insee AND parc.nom=tempparcelle.section 
+        AND substring(parc.nomsub,4,3)=prefsec  AND parc.numero=tempparcelle.plan),
+        
+res2 as (SELECT parc.idparcelle as idparcelleassise,idtempparcelle as idt2 FROM parc,majic2015.tempparcelle WHERE  gpdl='2' 
+         AND etat>1 AND parc.insee=tempparcelle.insee AND parc.nom=tempparcelle.section2 
+        AND substring(parc.nomsub,4,3)=pref2  AND parc.numero=tempparcelle.numplan2),
+                
+res as (SELECT idparcelle,idparcelleassise FROM res1,res2 WHERE idt1=idt2 )
+
+UPDATE majic2015.parcelle SET ptrparcasspdl=idparcelleassise FROM res WHERE idparcelle=res.idparcelle;
+
+
+
 
 --**** Gestion liaison lot surface ************
 with sec as (select distinct insee, idsubsection,subsection.nom as nomsub, section.nom from majic2015.section,majic2015.commune,majic2015.subsection where ptrcommune = idcommune and ptrsection = idsection ),
