@@ -89,13 +89,16 @@ Public Class IM_TempPEV
     End Property
 
     Public Sub affecte(ByVal ligne As String, ByVal ptrloc As Integer)
+
+
+
         mPtrLocal = ptrloc
         mNumPEV = ligne.Substring(27, 3)
         mAffectation = ligne.Substring(35, 1)
         mCategorie = ligne.Substring(37, 2)
-        mVL70 = ligne.Substring(51, 9)
-        mVLactu = ligne.Substring(60, 9)
-        mExoP = ligne.Substring(69, 2)
+        mVL70 = Val(Trim(ligne).Substring(60, 9))
+        mVLactu = Val(Trim(ligne).Substring(69, 9))
+        mExoP = ligne.Substring(78, 2)
     End Sub
     Public Function Enregistre()
 
@@ -103,7 +106,10 @@ Public Class IM_TempPEV
         & " numpev,affectation,categorie,vl70,vlactu,exop" _
         & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6) RETURNING idtemppev;"
 
-        Dim cmd As New NpgsqlCommand(sql1, cnngen)
+        Dim cmd As New NpgsqlCommand(sql1, CnnGen)
+
+
+
         cmd.Parameters.Clear()
 
         Dim p As New NpgsqlParameter("p", mPtrLocal)

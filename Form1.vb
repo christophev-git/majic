@@ -118,8 +118,6 @@ Public Class Form1
         
         If OpenFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
             If OpenFileDialog1.FileName.ToString = "*" Then
-                Dim lf As System.IO.DirectoryInfo
-                Debug.Print("")
 
 
             Else
@@ -315,7 +313,7 @@ Public Class Form1
         Else
 
             Dim lf As New System.IO.DirectoryInfo(RepRacine)
-            TextBox1.Clear()
+            ' TextBox1.Clear()
             For i = 0 To 4
 
 

@@ -33,7 +33,7 @@ Public Class IM_TempArt50
 
         ligne = ligne.Replace(Chr(34), "_")
         mPtrTemppev = idpev
-        mSurface = ligne.Substring(71, 9)
+        mSurface = ligne.Substring(37, 9)
 
     End Sub
     Public Function Enregistre()

@@ -39,8 +39,8 @@ Partial Class Form1
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Labelschema = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.RadioButtonsimple = New System.Windows.Forms.RadioButton()
         Me.RadioButtonMultiple = New System.Windows.Forms.RadioButton()
+        Me.RadioButtonsimple = New System.Windows.Forms.RadioButton()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.ButtonIntegration = New System.Windows.Forms.Button()
@@ -174,17 +174,6 @@ Partial Class Form1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Type fichier"
         '
-        'RadioButtonsimple
-        '
-        Me.RadioButtonsimple.AutoSize = True
-        Me.RadioButtonsimple.Location = New System.Drawing.Point(6, 30)
-        Me.RadioButtonsimple.Name = "RadioButtonsimple"
-        Me.RadioButtonsimple.Size = New System.Drawing.Size(56, 17)
-        Me.RadioButtonsimple.TabIndex = 0
-        Me.RadioButtonsimple.TabStop = True
-        Me.RadioButtonsimple.Text = "Simple"
-        Me.RadioButtonsimple.UseVisualStyleBackColor = True
-        '
         'RadioButtonMultiple
         '
         Me.RadioButtonMultiple.AutoSize = True
@@ -195,6 +184,17 @@ Partial Class Form1
         Me.RadioButtonMultiple.TabStop = True
         Me.RadioButtonMultiple.Text = "Multiple"
         Me.RadioButtonMultiple.UseVisualStyleBackColor = True
+        '
+        'RadioButtonsimple
+        '
+        Me.RadioButtonsimple.AutoSize = True
+        Me.RadioButtonsimple.Location = New System.Drawing.Point(6, 30)
+        Me.RadioButtonsimple.Name = "RadioButtonsimple"
+        Me.RadioButtonsimple.Size = New System.Drawing.Size(56, 17)
+        Me.RadioButtonsimple.TabIndex = 0
+        Me.RadioButtonsimple.TabStop = True
+        Me.RadioButtonsimple.Text = "Simple"
+        Me.RadioButtonsimple.UseVisualStyleBackColor = True
         '
         'Button2
         '
@@ -208,7 +208,7 @@ Partial Class Form1
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(185, 131)
+        Me.Button3.Location = New System.Drawing.Point(185, 115)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(102, 33)
         Me.Button3.TabIndex = 8
