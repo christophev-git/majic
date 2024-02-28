@@ -19,7 +19,15 @@ Public Class IM_TempArt40
             mPtrTemppev = value
         End Set
     End Property
-
+    Private mDependance As String
+    Public Property Dependance() As String
+        Get
+            Return mDependance
+        End Get
+        Set(ByVal value As String)
+            mDependance = value
+        End Set
+    End Property
     Private mEau As Boolean
     Public Property Eau() As Boolean
         Get
@@ -242,7 +250,10 @@ Public Class IM_TempArt40
     Public Sub Affecte(ByVal ligne As String, ByVal idpev As Integer)
 
         ligne = ligne.Replace(Chr(34), "_")
+
         mPtrTemppev = idpev
+
+        mDependance = ligne.Substring(35, 40)
 
         If ligne.Substring(75, 1) = "O" Then
             mEau = True
@@ -306,15 +317,18 @@ Public Class IM_TempArt40
 
     Public Function Enregistre()
 
-        Dim sql1 As String = "INSERT INTO " & SchemaName & ".tempart40 (ptrtemppev,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure," _
+        Dim sql1 As String = "INSERT INTO " & SchemaName & ".tempart40 (ptrtemppev,dependance,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure," _
                              & "baignoire,douche,lavabo,wc,pieceprincipale,salleamanger,chambre,cuisineinf9,cuisinesup9,salledebain,annexe,piece,superficie,egout)" _
                               & " VALUES " _
-                              & "(:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9,:p10,:p11,:p12,:p13,:p14,:p15,:p16,:p17,:p18,:p19,:p20,:p21,:p22) RETURNING idtempart40;"
+                              & "(:p1,:q,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9,:p10,:p11,:p12,:p13,:p14,:p15,:p16,:p17,:p18,:p19,:p20,:p21,:p22) RETURNING idtempart40;"
         Dim cmd As New NpgsqlCommand(sql1, CnnGen)
         cmd.Parameters.Clear()
 
         Dim p1 As New NpgsqlParameter("p1", mPtrTemppev)
         cmd.Parameters.Add(p1)
+
+        Dim q As New NpgsqlParameter("q", mDependance)
+        cmd.Parameters.Add(q)
 
         Dim p2 As New NpgsqlParameter("p2", mEau)
         cmd.Parameters.Add(p2)

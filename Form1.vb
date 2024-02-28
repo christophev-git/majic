@@ -62,6 +62,7 @@ Public Class Form1
             End If
         End If
         Dialogconnection.Dispose()
+        CnnGen.Open()
         CnnGen.ChangeDatabase(DatabaseName)
 
         Dim d As String = InputBox("Millesime des données (rien pour intégrer dans le shema choisi ou année pour intégration dans le schéma majic+milésime)?", "")

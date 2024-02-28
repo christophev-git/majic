@@ -42,12 +42,12 @@ Public Class MAJIC_TextFile
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("temppev") & "(idtemppev serial,ptrlocal integer, " _
-        & " numpev varchar(3),  affectation varchar(1),categorie varchar(2),vl70 integer,vlactu integer,exop varchar(2));"
+        & " numpev varchar(3),  affectation varchar(1),categorie varchar(2),vl70 integer,vlactu integer,exop varchar(2),coefentretien varchar(5),surfpond integer,coefsp varchar(5),coefsg varchar(5));"
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempadresse") & "(idtempadresse serial,departement varchar(2),insee varchar(3),identifiant varchar(4),clefrivoli varchar(1),naturevoie varchar(4),libelle varchar(26),voiepublique boolean,datecreation varchar(7),codemajic varchar(5));"
 
-        cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart40") & "(idtempart40 serial,ptrtemppev integer, " _
+        cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart40") & "(idtempart40 serial,ptrtemppev integer,dependance varchar," _
         & " eau boolean, electricite boolean,escalier boolean, gaz boolean,ascenceur boolean,chauffagecentral boolean,videordure boolean,egout boolean,baignoire integer," _
         & " douche integer, lavabo integer,wc integer, pieceprincipale integer,salleamanger integer,chambre integer,cuisineinf9 integer,cuisinesup9 integer,salledebain integer," _
         & "annexe integer,piece integer,superficie real);"
@@ -108,8 +108,9 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
-        'cnn.Open()
+        CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
+
         CreateTables()
 
         Dim tempPDL As New IM_MajicPDL

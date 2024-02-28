@@ -87,7 +87,44 @@ Public Class IM_TempPEV
             mExoP = value
         End Set
     End Property
+    Private mCoefEntretien As String
+    Public Property CoefEntretien() As String
+        Get
+            Return mCoefEntretien
+        End Get
+        Set(ByVal value As String)
+            mCoefEntretien = value
+        End Set
+    End Property
+    Private mSurfPond As Integer
+    Public Property SurfPond() As Integer
+        Get
+            Return mSurfPond
+        End Get
+        Set(ByVal value As Integer)
+            mSurfPond = value
+        End Set
+    End Property
 
+    Private mCoefSP As String
+    Public Property CoefSP() As String
+        Get
+            Return mCoefSP
+        End Get
+        Set(ByVal value As String)
+            mCoefSP = value
+        End Set
+    End Property
+
+    Private mCoefSG As String
+    Public Property CoefSG() As String
+        Get
+            Return mCoefSG
+        End Get
+        Set(ByVal value As String)
+            mCoefSG = value
+        End Set
+    End Property
     Public Sub affecte(ByVal ligne As String, ByVal ptrloc As Integer)
 
 
@@ -99,12 +136,21 @@ Public Class IM_TempPEV
         mVL70 = Val(Trim(ligne).Substring(60, 9))
         mVLactu = Val(Trim(ligne).Substring(69, 9))
         mExoP = ligne.Substring(78, 2)
+        mCoefEntretien = ligne.Substring(39, 3)
+        mSurfPond = ligne.Substring(54, 6)
+        If ligne.Length >= 165 Then
+            mCoefSP = ligne.Substring(155, 5)
+            mCoefSG = ligne.Substring(160, 5)
+        Else
+            mCoefSP = 0
+            mCoefSG = 0
+        End If
     End Sub
     Public Function Enregistre()
 
         Dim sql1 As String = "INSERT INTO " & SchemaName & ".temppev (ptrlocal," _
-        & " numpev,affectation,categorie,vl70,vlactu,exop" _
-        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6) RETURNING idtemppev;"
+        & " numpev,affectation,categorie,vl70,vlactu,exop,coefentretien,surfpond,coefsp,coefsg" _
+        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9,:p10) RETURNING idtemppev;"
 
         Dim cmd As New NpgsqlCommand(sql1, CnnGen)
 
@@ -126,6 +172,14 @@ Public Class IM_TempPEV
         cmd.Parameters.Add(p5)
         Dim p6 As New NpgsqlParameter("p6", mExoP)
         cmd.Parameters.Add(p6)
+        Dim p7 As New NpgsqlParameter("p7", mCoefEntretien)
+        cmd.Parameters.Add(p7)
+        Dim p8 As New NpgsqlParameter("p8", mSurfPond)
+        cmd.Parameters.Add(p8)
+        Dim p9 As New NpgsqlParameter("p9", mCoefSP)
+        cmd.Parameters.Add(p9)
+        Dim p10 As New NpgsqlParameter("p10", mCoefSG)
+        cmd.Parameters.Add(p10)
         mIdPEV = cmd.ExecuteScalar
         Enregistre = mIdPEV
         cmd.Dispose()
