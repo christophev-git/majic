@@ -42,7 +42,8 @@ Public Class MAJIC_TextFile
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("temppev") & "(idtemppev serial,ptrlocal integer, " _
-        & " numpev varchar(3),  affectation varchar(1),categorie varchar(2),vl70 integer,vlactu integer,exop varchar(2),coefentretien varchar(5),surfpond integer,coefsp varchar(5),coefsg varchar(5));"
+        & " numpev varchar(3),  affectation varchar(1),categorie varchar(2),vl70 integer,vlactu integer,exop varchar(2),coefentretien varchar(5),codecat varchar(4)," _
+        & "revise varchar(2),coefloc varchar(3),surfpond integer,coefsp varchar(5),coefsg varchar(5));"
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempadresse") & "(idtempadresse serial,departement varchar(2),insee varchar(3),identifiant varchar(4),clefrivoli varchar(1),naturevoie varchar(4),libelle varchar(26),voiepublique boolean,datecreation varchar(7),codemajic varchar(5));"
@@ -54,7 +55,7 @@ Public Class MAJIC_TextFile
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart50") & "(idtempart50 serial,ptrtemppev integer, " _
-        & "surface real);"
+        & "surfacepondere integer, surfaceprincipale integer,surfacesecondcouverte integer,surfacesecondnoncouverte integer,surfacepkcouvert integer,surfacepknoncouvert integer);"
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart60") & "(idtempart60 serial,ptrtemppev integer, " _

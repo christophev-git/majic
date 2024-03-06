@@ -125,6 +125,34 @@ Public Class IM_TempPEV
             mCoefSG = value
         End Set
     End Property
+    Private mCodeCat As String
+    Public Property CodeCat() As String
+        Get
+            Return mCodeCat
+        End Get
+        Set(ByVal value As String)
+            mCodeCat = value
+        End Set
+    End Property
+
+    Private mRevise As String
+    Public Property Revise() As String
+        Get
+            Return mRevise
+        End Get
+        Set(ByVal value As String)
+            mRevise = value
+        End Set
+    End Property
+    Private mCoefLoc As String
+    Public Property CoefLoc() As String
+        Get
+            Return mCoefLoc
+        End Get
+        Set(ByVal value As String)
+            mCoefLoc = value
+        End Set
+    End Property
     Public Sub affecte(ByVal ligne As String, ByVal ptrloc As Integer)
 
 
@@ -133,6 +161,9 @@ Public Class IM_TempPEV
         mNumPEV = ligne.Substring(27, 3)
         mAffectation = ligne.Substring(35, 1)
         mCategorie = ligne.Substring(37, 2)
+        mCodeCat = ligne.Substring(45, 4)
+        mRevise = ligne.Substring(49, 2)
+        mCoefLoc = ligne.Substring(51, 3)
         mVL70 = Val(Trim(ligne).Substring(60, 9))
         mVLactu = Val(Trim(ligne).Substring(69, 9))
         mExoP = ligne.Substring(78, 2)
@@ -149,8 +180,8 @@ Public Class IM_TempPEV
     Public Function Enregistre()
 
         Dim sql1 As String = "INSERT INTO " & SchemaName & ".temppev (ptrlocal," _
-        & " numpev,affectation,categorie,vl70,vlactu,exop,coefentretien,surfpond,coefsp,coefsg" _
-        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p8,:p9,:p10) RETURNING idtemppev;"
+        & " numpev,affectation,categorie,vl70,vlactu,exop,coefentretien,codecat,revise,coefloc,surfpond,coefsp,coefsg" _
+        & ") VALUES (:p,:p1,:p2,:p3,:p4,:p5,:p6,:p7,:p11,:p12,:p13,:p8,:p9,:p10) RETURNING idtemppev;"
 
         Dim cmd As New NpgsqlCommand(sql1, CnnGen)
 
@@ -174,6 +205,12 @@ Public Class IM_TempPEV
         cmd.Parameters.Add(p6)
         Dim p7 As New NpgsqlParameter("p7", mCoefEntretien)
         cmd.Parameters.Add(p7)
+        Dim p11 As New NpgsqlParameter("p11", mCodeCat)
+        cmd.Parameters.Add(p11)
+        Dim p12 As New NpgsqlParameter("p12", mRevise)
+        cmd.Parameters.Add(p12)
+        Dim p13 As New NpgsqlParameter("p13", mCoefLoc)
+        cmd.Parameters.Add(p13)
         Dim p8 As New NpgsqlParameter("p8", mSurfPond)
         cmd.Parameters.Add(p8)
         Dim p9 As New NpgsqlParameter("p9", mCoefSP)
