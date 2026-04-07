@@ -368,16 +368,18 @@ Public Class IM_TempSurface
         cmd.Parameters.Add(cs)
         Dim cons As New NpgsqlParameter("cons", mConstructible)
         cmd.Parameters.Add(cons)
-        Dim pref As New NpgsqlParameter("pref", mPrefixeParc)
-        cmd.Parameters.Add(pref)
-        Dim sec As New NpgsqlParameter("sec", mSectionParc)
-        cmd.Parameters.Add(sec)
-        Dim plan As New NpgsqlParameter("plan", mPlanParc)
-        cmd.Parameters.Add(plan)
-        Dim npdl As New NpgsqlParameter("npdl", mNumPDL)
-        cmd.Parameters.Add(npdl)
-        Dim nl As New NpgsqlParameter("nl", mNumLot)
-        cmd.Parameters.Add(nl)
+        If mPrefixeParc <> "" Then
+            Dim pref As New NpgsqlParameter("pref", mPrefixeParc)
+            cmd.Parameters.Add(pref)
+            Dim sec As New NpgsqlParameter("sec", mSectionParc)
+            cmd.Parameters.Add(sec)
+            Dim plan As New NpgsqlParameter("plan", mPlanParc)
+            cmd.Parameters.Add(plan)
+            Dim npdl As New NpgsqlParameter("npdl", mNumPDL)
+            cmd.Parameters.Add(npdl)
+            Dim nl As New NpgsqlParameter("nl", mNumLot)
+            cmd.Parameters.Add(nl)
+        End If
 
         Enregistre = cmd.ExecuteNonQuery
         cmd.Parameters.Clear()

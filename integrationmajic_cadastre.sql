@@ -9,7 +9,7 @@
 		ADD COLUMN pdltype varchar(3);
 	ALTER TABLE cadastre.commune
 		ADD COLUMN departement varchar(2);
-BEGIN;
+
 -- Remplacer section majic " A" par section majic2015 "0A"
 
 update cadastre.tempparcelle set
@@ -591,7 +591,14 @@ CREATE TABLE cadastre.pev
   vl70 integer,
   vlactu integer,
   exop character varying(2),
-  idtemppev integer
+  idtemppev integer,
+ coefentretien character varying(5),
+ codecat character varying(4),
+ revise character varying(2),
+ coefloc character varying(3),
+ surfpond integer,
+ coefsp character varying(5),
+ coefsg character varying(5)
 )
 WITH (
   OIDS=FALSE
@@ -601,10 +608,11 @@ ALTER TABLE cadastre.pev
 
 
 ----------------------------------------------- Insertion PEV-------------------------------------------------------
-with res as (SELECT idlocal,numpev,affectation,categorie,vl70,vlactu,exop,idtemppev FROM cadastre.locaux,cadastre.temppev WHERE idtemplocal=ptrlocal)
+with res as (SELECT idlocal,numpev,affectation,categorie,vl70,vlactu,exop,idtemppev,coefentretien,codecat,revise,coefloc,surfpond,coefsp,coefsg
+			 FROM cadastre.locaux,cadastre.temppev WHERE idtemplocal=ptrlocal)
 
 INSERT INTO cadastre.pev 
-(ptrlocal,numpev,affectation,categorie,vl70,vlactu,exop,idtemppev)
+(ptrlocal,numpev,affectation,categorie,vl70,vlactu,exop,idtemppev,coefentretien,codecat,revise,coefloc,surfpond,coefsp,coefsg)
 SELECT * FROM res;
 
 --------------------------------------------- Creation joint proplocal----------------------------------------------
@@ -658,6 +666,7 @@ SELECT * FROM lotloc;
 CREATE TABLE IF NOT EXISTS cadastre.art40(
 idart40 serial,
 ptrpev integer,
+dependance varchar(40),
 eau boolean,
 electricite boolean,
 escalier boolean,
@@ -683,7 +692,12 @@ superficie real);
 CREATE TABLE IF NOT EXISTS cadastre.art50(
 idart50 serial,
 ptrpev integer,
-surface real);
+surfacepondere integer,
+surfaceprincipale integer,
+surfacesecondcouverte integer,
+surfacesecondnoncouverte integer,
+surfacepkcouvert integer,
+surfacepknoncouvert integer);
 
 CREATE TABLE IF NOT EXISTS cadastre.art60(
 idart60 serial,
@@ -692,23 +706,23 @@ nature varchar(2),
 surface real);
 --**************************************************
 -- integration art40
-WITH res as (SELECT idpev,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure,egout,baignoire,douche,lavabo,wc,
+WITH res as (SELECT idpev,dependance,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure,egout,baignoire,douche,lavabo,wc,
 pieceprincipale,salleamanger,chambre,cuisineinf9,cuisinesup9,salledebain,annexe,piece,superficie
 FROM cadastre.pev,cadastre.tempart40
 WHERE idtemppev=ptrtemppev)
 
 INSERT INTO cadastre.art40
-(ptrpev,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure,egout,baignoire,douche,lavabo,wc,
+(ptrpev,dependance,eau,electricite,escalier,gaz,ascenceur,chauffagecentral,videordure,egout,baignoire,douche,lavabo,wc,
 pieceprincipale,salleamanger,chambre,cuisineinf9,cuisinesup9,salledebain,annexe,piece,superficie)
 SELECT * FROM res;
 --**************************************************
 --integration art50
-WITH res as (SELECT idpev,surface
+WITH res as (SELECT idpev,surfacepondere,surfaceprincipale,surfacesecondcouverte,surfacesecondnoncouverte,surfacepkcouvert,surfacepknoncouvert
 FROM cadastre.pev,cadastre.tempart50
 WHERE idtemppev=ptrtemppev)
 
 INSERT INTO cadastre.art50
-(ptrpev,surface)
+(ptrpev,surfacepondere,surfaceprincipale,surfacesecondcouverte,surfacesecondnoncouverte,surfacepkcouvert,surfacepknoncouvert)
 SELECT * FROM res;
 --integration art60
 --**************************************************
@@ -719,6 +733,3 @@ WHERE idtemppev=ptrtemppev)
 INSERT INTO cadastre.art60
 (ptrpev,nature,surface)
 SELECT * FROM res
-
-
-COMMIT;

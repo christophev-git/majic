@@ -168,6 +168,7 @@
     <Compile Include="IM_TempArt40.vb" />
     <Compile Include="IM_TempArt50.vb" />
     <Compile Include="IM_TempArt60.vb" />
+    <Compile Include="IM_tempexoneration.vb" />
     <Compile Include="IM_TempLocal.vb" />
     <Compile Include="IM_TempLotLocal.vb" />
     <Compile Include="IM_TempParcelle.vb" />

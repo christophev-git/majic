@@ -46,6 +46,7 @@ Partial Class Form1
         Me.ButtonIntegration = New System.Windows.Forms.Button()
         Me.Button5 = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -69,43 +70,43 @@ Partial Class Form1
         'ConnexionToolStripMenuItem
         '
         Me.ConnexionToolStripMenuItem.Name = "ConnexionToolStripMenuItem"
-        Me.ConnexionToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ConnexionToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.ConnexionToolStripMenuItem.Text = "Connexion"
         '
         'NonBatiToolStripMenuItem
         '
         Me.NonBatiToolStripMenuItem.Name = "NonBatiToolStripMenuItem"
-        Me.NonBatiToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.NonBatiToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.NonBatiToolStripMenuItem.Text = "Non Bati"
         '
         'PDLToolStripMenuItem
         '
         Me.PDLToolStripMenuItem.Name = "PDLToolStripMenuItem"
-        Me.PDLToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.PDLToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.PDLToolStripMenuItem.Text = "PDL"
         '
         'ProprietaireToolStripMenuItem
         '
         Me.ProprietaireToolStripMenuItem.Name = "ProprietaireToolStripMenuItem"
-        Me.ProprietaireToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ProprietaireToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.ProprietaireToolStripMenuItem.Text = "Proprietaire"
         '
         'BatiToolStripMenuItem
         '
         Me.BatiToolStripMenuItem.Name = "BatiToolStripMenuItem"
-        Me.BatiToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.BatiToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.BatiToolStripMenuItem.Text = "Bati"
         '
         'LotLocauxToolStripMenuItem
         '
         Me.LotLocauxToolStripMenuItem.Name = "LotLocauxToolStripMenuItem"
-        Me.LotLocauxToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.LotLocauxToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.LotLocauxToolStripMenuItem.Text = "Lot Locaux"
         '
         'FantoirToolStripMenuItem
         '
         Me.FantoirToolStripMenuItem.Name = "FantoirToolStripMenuItem"
-        Me.FantoirToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.FantoirToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.FantoirToolStripMenuItem.Text = "Fantoir"
         '
         'DvfToolStripMenuItem
@@ -142,7 +143,7 @@ Partial Class Form1
         Me.TextBox1.Location = New System.Drawing.Point(307, 27)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(571, 197)
+        Me.TextBox1.Size = New System.Drawing.Size(571, 464)
         Me.TextBox1.TabIndex = 3
         '
         'Button1
@@ -233,11 +234,21 @@ Partial Class Form1
         Me.Button5.Text = "Annuler"
         Me.Button5.UseVisualStyleBackColor = True
         '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(185, 248)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(102, 42)
+        Me.Button4.TabIndex = 11
+        Me.Button4.Text = "temp exoneration"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(890, 247)
+        Me.ClientSize = New System.Drawing.Size(890, 519)
+        Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.ButtonIntegration)
         Me.Controls.Add(Me.Button3)
@@ -283,5 +294,5 @@ Partial Class Form1
     Friend WithEvents ButtonIntegration As System.Windows.Forms.Button
     Friend WithEvents Button5 As System.Windows.Forms.Button
     Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
-
+    Friend WithEvents Button4 As Button
 End Class

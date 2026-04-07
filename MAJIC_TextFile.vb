@@ -62,6 +62,9 @@ Public Class MAJIC_TextFile
         & "nature varchar(2),surface real);"
         cmd.ExecuteNonQuery()
 
+        cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempexoneration") & "(idtempexoneration serial, " _
+        & "invariant varchar(10),collectivite varchar(2),prctexo integer,nature varchar(2),annee_dep varchar(4),annee_ret varchar(4));"
+        cmd.ExecuteNonQuery()
 
     End Sub
 
@@ -73,7 +76,8 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
         'cnn.Open()
         CreateTables()
         Dim tempparc As New IM_TempParcelle
@@ -109,7 +113,7 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        CnnGen.Open()
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
         CnnGen.ChangeDatabase(databasename)
 
         CreateTables()
@@ -145,7 +149,8 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
         'cnn.Open()
         CreateTables()
 
@@ -169,7 +174,38 @@ Public Class MAJIC_TextFile
         End Using
 
     End Sub
+    Public Sub PopulateExoneration(ByVal nomfichier As String)
+        If CnnGen Is Nothing Then
+            If Dialogconnection.ShowDialog = DialogResult.OK Then
 
+            Else
+                Exit Sub
+            End If
+        End If
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(DatabaseName)
+        CreateTables()
+        Using SR As New System.IO.StreamReader(nomfichier)
+            Dim ligne As String
+            Dim invar As String = ""
+            ligne = SR.ReadLine
+            Do While Not SR.EndOfStream
+                If ligne.Length > 32 Then
+                    invar = ligne.Substring(6, 10)
+                    Do While invar = ligne.Substring(6, 10) And Not SR.EndOfStream
+                        If ligne.Substring(30, 2) = "30" Then
+                            Dim imex As New IM_tempexoneration
+                            imex.Affecte(ligne)
+                            imex.Enregistre()
+                        End If
+                        ligne = SR.ReadLine
+                    Loop
+                Else
+                    ligne = SR.ReadLine
+                End If
+            Loop
+        End Using
+    End Sub
     Public Sub PopulateTempLocaux(ByVal nomfichier As String)
         If cnngen Is Nothing Then
             If Dialogconnection.ShowDialog = DialogResult.OK Then
@@ -178,7 +214,8 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
         'cnn.Open()
         CreateTables()
         Dim temploc As New IM_TempLocal
@@ -252,7 +289,8 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
         'cnn.Open()
         CreateTables()
 
@@ -285,7 +323,8 @@ Public Class MAJIC_TextFile
                 Exit Sub
             End If
         End If
-        cnngen.ChangeDatabase(databasename)
+        If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
+        CnnGen.ChangeDatabase(databasename)
         'cnn.Open()
         CreateTables()
 

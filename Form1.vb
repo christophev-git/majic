@@ -354,13 +354,57 @@ Public Class Form1
 
         
     End Sub
-
+    Private lipos As Integer = 0
     Private Sub RealiseProgres(msg As String)
+        If lipos = 15 Then
+            lipos = 0
+            TextBox1.Clear()
+        End If
+
         TextBox1.Text = TextBox1.Text & vbCrLf & msg
+        lipos = lipos + 1
+
     End Sub
 
     Private Delegate Sub Progres(msg As String)
 
     Private ProgresInstance As New Progres(AddressOf RealiseProgres)
 
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Dim Maj As New MAJIC_TextFile
+
+        Dim lf As New System.IO.DirectoryInfo(RepRacine)
+        ' TextBox1.Clear()
+        For i = 0 To 4
+
+
+            For Each fi As System.IO.FileInfo In lf.GetFiles(ListeFichier(i), IO.SearchOption.AllDirectories)
+
+                Me.Invoke(ProgresInstance, " Traitement " & fi.FullName)
+
+                Select Case i
+
+                    Case 0
+
+
+                    Case 1
+
+                    Case 2
+
+                    Case 3
+                        Maj.PopulateExoneration(fi.FullName)
+                    Case 4
+
+                End Select
+
+            Next
+
+
+        Next
+
+
+
+
+
+    End Sub
 End Class
