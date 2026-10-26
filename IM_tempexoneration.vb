@@ -1,93 +1,76 @@
 ﻿Imports Npgsql
+Imports NpgsqlTypes
 
+' Enregistrements 30 (exonération sur la base imposable) et 31 (exonération sur la
+' base imposée) du fichier bâti : même dessin, distingués par CodeEnregistrement.
 Public Class IM_tempexoneration
-    Private mInvariant As String
-    Public Property Invariant() As String
-        Get
-            Return mInvariant
-        End Get
-        Set(ByVal value As String)
-            mInvariant = value
-        End Set
-    End Property
-    Private mCollectivite As String
-    Public Property Collectivite() As String
-        Get
-            Return mCollectivite
-        End Get
-        Set(ByVal value As String)
-            mCollectivite = value
-        End Set
-    End Property
-    Private mPrctexo As Integer
-    Public Property Prctexo() As Integer
-        Get
-            Return mPrctexo
-        End Get
-        Set(ByVal value As Integer)
-            mPrctexo = value
-        End Set
-    End Property
-    Private mNature As String
-    Public Property Nature() As String
-        Get
-            Return mNature
-        End Get
-        Set(ByVal value As String)
-            mNature = value
-        End Set
-    End Property
-    Private mAnneeDep As String
-    Public Property AnneeDep() As String
-        Get
-            Return mAnneeDep
-        End Get
-        Set(ByVal value As String)
-            mAnneeDep = value
-        End Set
-    End Property
-    Private mAnneeRet As String
-    Public Property AnneeRet() As String
-        Get
-            Return mAnneeRet
-        End Get
-        Set(ByVal value As String)
-            mAnneeRet = value
-        End Set
-    End Property
+    Public Property Departement As String
+    Public Property Insee As String
+    Public Property Invariant As String
+    Public Property AnneeImmobilisation As String
+    Public Property NumPev As String
+    Public Property CodeEnregistrement As String
+    Public Property NumOrdre As String
+    Public Property Collectivite As String
+    Public Property Prctexo As Integer?
+    Public Property Nature As String
+    Public Property AnneeDep As String
+    Public Property AnneeRet As String
+    Public Property VlExo70 As Integer?
+    Public Property VlExoAnnee As Integer?
+    Public Property FractionExo70 As Integer?
+    Public Property FractionExoAnnee As Integer?
+    Public Property RcExoAnnee As Integer?
+    Public Property Plafonnement As String
 
     Public Sub Affecte(ByVal ligne As String)
-        mInvariant = ligne.Substring(6, 10)
-        mCollectivite = ligne.Substring(35, 2)
-        mPrctexo = ligne.Substring(37, 5)
-        mNature = ligne.Substring(42, 2)
-        mAnneeDep = ligne.Substring(44, 4)
-        mAnneeRet = ligne.Substring(48, 4)
-
+        Departement = Zone(ligne, 1, 2)            ' CCODEP
+        Insee = Zone(ligne, 4, 3)                  ' CCOCOM
+        Invariant = Zone(ligne, 7, 10)             ' INVAR
+        AnneeImmobilisation = Zone(ligne, 24, 4)   ' JANBIL (établissements industriels)
+        NumPev = Zone(ligne, 28, 3)                ' DNUPEV
+        CodeEnregistrement = Zone(ligne, 31, 2)    ' CENR : 30 ou 31
+        NumOrdre = Zone(ligne, 33, 3)              ' DNUEXB
+        Collectivite = Zone(ligne, 36, 2)          ' CCOLLOC : C, TC, GC
+        Prctexo = ZoneEntier(ligne, 38, 5)         ' PEXB 999V99 : 10000 = 100 %
+        Nature = Zone(ligne, 43, 2)                ' GNEXTL
+        AnneeDep = Zone(ligne, 45, 4)              ' JANDEB
+        AnneeRet = Zone(ligne, 49, 4)              ' JANIMP
+        VlExo70 = ZoneEntier(ligne, 103, 9)        ' DVLDIF2 (non révisé)
+        VlExoAnnee = ZoneEntier(ligne, 113, 9)     ' DVLDIF2A
+        FractionExo70 = ZoneEntier(ligne, 123, 9)  ' FCEXB2 (non révisé)
+        FractionExoAnnee = ZoneEntier(ligne, 133, 9) ' FCEXBA2
+        RcExoAnnee = ZoneEntier(ligne, 143, 9)     ' RCEXBA2
+        Plafonnement = Zone(ligne, 173, 10)        ' VALPLAF (non révisé)
     End Sub
 
-    Public Function Enregistre()
+    Public Sub Enregistre()
 
-        Dim sql1 As String = "INSERT INTO " & SchemaName & ".tempexoneration (invariant,collectivite,prctexo,nature,annee_dep,annee_ret)" _
-        & " VALUES (:p,:p1,:p2,:p3,:p4,:p5)"
+        Dim sql1 As String = "INSERT INTO " & GetFullQualifiedTableName("tempexoneration") _
+        & " (departement,insee,invariant,anneeimmo,numpev,cenr,numordre,collectivite,prctexo,nature,annee_dep,annee_ret," _
+        & "vlexo70,vlexoannee,fractionexo70,fractionexoannee,rcexoannee,plafonnement)" _
+        & " VALUES (:dep,:insee,:invar,:janbil,:pev,:cenr,:ordre,:coll,:prct,:nature,:deb,:ret,:vl70,:vla,:fc70,:fca,:rca,:plaf)"
 
-        Dim cmd As New NpgsqlCommand(sql1, CnnGen)
-        cmd.Parameters.Clear()
-
-        Dim p As New NpgsqlParameter("p", mInvariant)
-        cmd.Parameters.Add(p)
-        Dim p1 As New NpgsqlParameter("p1", mCollectivite)
-        cmd.Parameters.Add(p1)
-        Dim p2 As New NpgsqlParameter("p2", mPrctexo)
-        cmd.Parameters.Add(p2)
-        Dim p3 As New NpgsqlParameter("p3", mNature)
-        cmd.Parameters.Add(p3)
-        Dim p4 As New NpgsqlParameter("p4", mAnneeDep)
-        cmd.Parameters.Add(p4)
-        Dim p5 As New NpgsqlParameter("p5", mAnneeRet)
-        cmd.Parameters.Add(p5)
-
-        cmd.ExecuteNonQuery()
-        cmd.Dispose()
-    End Function
+        Using cmd As New NpgsqlCommand(sql1, CnnGen)
+            cmd.Parameters.AddWithValue("dep", Departement)
+            cmd.Parameters.AddWithValue("insee", Insee)
+            cmd.Parameters.AddWithValue("invar", Invariant)
+            cmd.Parameters.AddWithValue("janbil", AnneeImmobilisation)
+            cmd.Parameters.AddWithValue("pev", NumPev)
+            cmd.Parameters.AddWithValue("cenr", CodeEnregistrement)
+            cmd.Parameters.AddWithValue("ordre", NumOrdre)
+            cmd.Parameters.AddWithValue("coll", Collectivite)
+            cmd.Parameters.AddWithValue("prct", NpgsqlDbType.Integer, ValeurParametre(Prctexo))
+            cmd.Parameters.AddWithValue("nature", Nature)
+            cmd.Parameters.AddWithValue("deb", AnneeDep)
+            cmd.Parameters.AddWithValue("ret", AnneeRet)
+            cmd.Parameters.AddWithValue("vl70", NpgsqlDbType.Integer, ValeurParametre(VlExo70))
+            cmd.Parameters.AddWithValue("vla", NpgsqlDbType.Integer, ValeurParametre(VlExoAnnee))
+            cmd.Parameters.AddWithValue("fc70", NpgsqlDbType.Integer, ValeurParametre(FractionExo70))
+            cmd.Parameters.AddWithValue("fca", NpgsqlDbType.Integer, ValeurParametre(FractionExoAnnee))
+            cmd.Parameters.AddWithValue("rca", NpgsqlDbType.Integer, ValeurParametre(RcExoAnnee))
+            cmd.Parameters.AddWithValue("plaf", Plafonnement)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
 End Class

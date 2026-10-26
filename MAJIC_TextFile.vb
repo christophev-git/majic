@@ -62,8 +62,26 @@ Public Class MAJIC_TextFile
         & "nature varchar(2),surface real);"
         cmd.ExecuteNonQuery()
 
+        ' articles 30 et 31 du bâti, distingués par cenr
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempexoneration") & "(idtempexoneration serial, " _
         & "invariant varchar(10),collectivite varchar(2),prctexo integer,nature varchar(2),annee_dep varchar(4),annee_ret varchar(4));"
+        cmd.ExecuteNonQuery()
+        ' colonnes ajoutées après coup : ADD COLUMN pour mettre à niveau une table déjà créée
+        cmd.CommandText = "ALTER TABLE " & GetFullQualifiedTableName("tempexoneration") _
+        & " ADD COLUMN IF NOT EXISTS departement varchar(2), ADD COLUMN IF NOT EXISTS insee varchar(3)," _
+        & " ADD COLUMN IF NOT EXISTS anneeimmo varchar(4), ADD COLUMN IF NOT EXISTS numpev varchar(3)," _
+        & " ADD COLUMN IF NOT EXISTS cenr varchar(2), ADD COLUMN IF NOT EXISTS numordre varchar(3)," _
+        & " ADD COLUMN IF NOT EXISTS vlexo70 integer, ADD COLUMN IF NOT EXISTS vlexoannee integer," _
+        & " ADD COLUMN IF NOT EXISTS fractionexo70 integer, ADD COLUMN IF NOT EXISTS fractionexoannee integer," _
+        & " ADD COLUMN IF NOT EXISTS rcexoannee integer, ADD COLUMN IF NOT EXISTS plafonnement varchar(10);"
+        cmd.ExecuteNonQuery()
+
+        cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart36") & "(idtempart36 serial, " _
+        & "departement varchar(2),insee varchar(3),invariant varchar(10),numpev varchar(3)," _
+        & "vlimp70_com integer,vlimpannee_com integer,baseimp_com integer," _
+        & "vlimp70_tse integer,vlimpannee_tse integer,baseimp_tse integer," _
+        & "vlimp70_gc integer,vlimpannee_gc integer,baseimp_gc integer," _
+        & "baseom integer,baseomecretee integer,montanttieom integer);"
         cmd.ExecuteNonQuery()
 
     End Sub
@@ -185,25 +203,27 @@ Public Class MAJIC_TextFile
         If CnnGen.State = ConnectionState.Closed Then CnnGen.Open()
         CnnGen.ChangeDatabase(DatabaseName)
         CreateTables()
-        Using SR As New System.IO.StreamReader(nomfichier)
-            Dim ligne As String
-            Dim invar As String = ""
-            ligne = SR.ReadLine
-            Do While Not SR.EndOfStream
-                If ligne.Length > 32 Then
-                    invar = ligne.Substring(6, 10)
-                    Do While invar = ligne.Substring(6, 10) And Not SR.EndOfStream
-                        If ligne.Substring(30, 2) = "30" Then
+        ' une transaction par fichier : un fichier en erreur n'est pas intégré à moitié
+        Using tr As NpgsqlTransaction = CnnGen.BeginTransaction()
+            Using SR As New System.IO.StreamReader(nomfichier)
+                Do While Not SR.EndOfStream
+                    Dim ligne As String = SR.ReadLine
+                    ' les articles tête direction / commune n'ont pas d'invariant
+                    If ligne.Length < 32 OrElse Zone(ligne, 7, 10).Trim() = "" Then Continue Do
+
+                    Select Case Zone(ligne, 31, 2)
+                        Case "30", "31"
                             Dim imex As New IM_tempexoneration
                             imex.Affecte(ligne)
                             imex.Enregistre()
-                        End If
-                        ligne = SR.ReadLine
-                    Loop
-                Else
-                    ligne = SR.ReadLine
-                End If
-            Loop
+                        Case "36"
+                            Dim art36 As New IM_TempArt36
+                            art36.Affecte(ligne)
+                            art36.Enregistre()
+                    End Select
+                Loop
+            End Using
+            tr.Commit()
         End Using
     End Sub
     Public Sub PopulateTempLocaux(ByVal nomfichier As String)
