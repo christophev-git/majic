@@ -5,6 +5,7 @@ Imports NpgsqlTypes
 ' base imposée) du fichier bâti : même dessin, distingués par CodeEnregistrement.
 Public Class IM_tempexoneration
     Public Property Departement As String
+    Public Property Direction As String
     Public Property Insee As String
     Public Property Invariant As String
     Public Property AnneeImmobilisation As String
@@ -25,6 +26,7 @@ Public Class IM_tempexoneration
 
     Public Sub Affecte(ByVal ligne As String)
         Departement = Zone(ligne, 1, 2)            ' CCODEP
+        Direction = Zone(ligne, 3, 1)              ' CCODIR
         Insee = Zone(ligne, 4, 3)                  ' CCOCOM
         Invariant = Zone(ligne, 7, 10)             ' INVAR
         AnneeImmobilisation = Zone(ligne, 24, 4)   ' JANBIL (établissements industriels)
@@ -47,12 +49,13 @@ Public Class IM_tempexoneration
     Public Sub Enregistre()
 
         Dim sql1 As String = "INSERT INTO " & GetFullQualifiedTableName("tempexoneration") _
-        & " (departement,insee,invariant,anneeimmo,numpev,cenr,numordre,collectivite,prctexo,nature,annee_dep,annee_ret," _
+        & " (departement,direction,insee,invariant,anneeimmo,numpev,cenr,numordre,collectivite,prctexo,nature,annee_dep,annee_ret," _
         & "vlexo70,vlexoannee,fractionexo70,fractionexoannee,rcexoannee,plafonnement)" _
-        & " VALUES (:dep,:insee,:invar,:janbil,:pev,:cenr,:ordre,:coll,:prct,:nature,:deb,:ret,:vl70,:vla,:fc70,:fca,:rca,:plaf)"
+        & " VALUES (:dep,:dir,:insee,:invar,:janbil,:pev,:cenr,:ordre,:coll,:prct,:nature,:deb,:ret,:vl70,:vla,:fc70,:fca,:rca,:plaf)"
 
         Using cmd As New NpgsqlCommand(sql1, CnnGen)
             cmd.Parameters.AddWithValue("dep", Departement)
+            cmd.Parameters.AddWithValue("dir", Direction)
             cmd.Parameters.AddWithValue("insee", Insee)
             cmd.Parameters.AddWithValue("invar", Invariant)
             cmd.Parameters.AddWithValue("janbil", AnneeImmobilisation)

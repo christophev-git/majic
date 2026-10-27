@@ -63,12 +63,16 @@ Public Class MAJIC_TextFile
         cmd.ExecuteNonQuery()
 
         ' articles 30 et 31 du bâti, distingués par cenr
+        ' clé du local : departement + direction + invariant (l'invariant seul n'est unique que par direction)
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempexoneration") & "(idtempexoneration serial, " _
-        & "invariant varchar(10),collectivite varchar(2),prctexo integer,nature varchar(2),annee_dep varchar(4),annee_ret varchar(4));"
+        & "departement varchar(2),direction varchar(1),insee varchar(3),invariant varchar(10),anneeimmo varchar(4),numpev varchar(3)," _
+        & "cenr varchar(2),numordre varchar(3),collectivite varchar(2),prctexo integer,nature varchar(2),annee_dep varchar(4),annee_ret varchar(4)," _
+        & "vlexo70 integer,vlexoannee integer,fractionexo70 integer,fractionexoannee integer,rcexoannee integer,plafonnement varchar(10));"
         cmd.ExecuteNonQuery()
-        ' colonnes ajoutées après coup : ADD COLUMN pour mettre à niveau une table déjà créée
+        ' mise à niveau d'une table créée par une version antérieure (colonnes ajoutées en fin de table)
         cmd.CommandText = "ALTER TABLE " & GetFullQualifiedTableName("tempexoneration") _
-        & " ADD COLUMN IF NOT EXISTS departement varchar(2), ADD COLUMN IF NOT EXISTS insee varchar(3)," _
+        & " ADD COLUMN IF NOT EXISTS departement varchar(2), ADD COLUMN IF NOT EXISTS direction varchar(1)," _
+        & " ADD COLUMN IF NOT EXISTS insee varchar(3)," _
         & " ADD COLUMN IF NOT EXISTS anneeimmo varchar(4), ADD COLUMN IF NOT EXISTS numpev varchar(3)," _
         & " ADD COLUMN IF NOT EXISTS cenr varchar(2), ADD COLUMN IF NOT EXISTS numordre varchar(3)," _
         & " ADD COLUMN IF NOT EXISTS vlexo70 integer, ADD COLUMN IF NOT EXISTS vlexoannee integer," _
@@ -77,11 +81,13 @@ Public Class MAJIC_TextFile
         cmd.ExecuteNonQuery()
 
         cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & GetFullQualifiedTableName("tempart36") & "(idtempart36 serial, " _
-        & "departement varchar(2),insee varchar(3),invariant varchar(10),numpev varchar(3)," _
+        & "departement varchar(2),direction varchar(1),insee varchar(3),invariant varchar(10),numpev varchar(3)," _
         & "vlimp70_com integer,vlimpannee_com integer,baseimp_com integer," _
         & "vlimp70_tse integer,vlimpannee_tse integer,baseimp_tse integer," _
         & "vlimp70_gc integer,vlimpannee_gc integer,baseimp_gc integer," _
         & "baseom integer,baseomecretee integer,montanttieom integer);"
+        cmd.ExecuteNonQuery()
+        cmd.CommandText = "ALTER TABLE " & GetFullQualifiedTableName("tempart36") & " ADD COLUMN IF NOT EXISTS direction varchar(1);"
         cmd.ExecuteNonQuery()
 
     End Sub
