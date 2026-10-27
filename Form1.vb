@@ -370,6 +370,20 @@ Public Class Form1
 
     Private ProgresInstance As New Progres(AddressOf RealiseProgres)
 
+    Private Sub ButtonIntegrationExo_Click(sender As Object, e As EventArgs) Handles ButtonIntegrationExo.Click
+        Me.Invoke(ProgresInstance, " Intégration art36 / exoneration...")
+        Me.Cursor = Cursors.WaitCursor
+        Try
+            Dim integration As New IntegrationExoneration
+            Me.Invoke(ProgresInstance, integration.Integre())
+        Catch ex As Exception
+            ' transaction annulée : aucune table n'est modifiée
+            Me.Invoke(ProgresInstance, " Erreur, rien n'a été intégré : " & ex.Message)
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         Dim Maj As New MAJIC_TextFile
 

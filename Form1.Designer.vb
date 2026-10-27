@@ -47,6 +47,7 @@ Partial Class Form1
         Me.Button5 = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.Button4 = New System.Windows.Forms.Button()
+        Me.ButtonIntegrationExo = New System.Windows.Forms.Button()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -243,11 +244,21 @@ Partial Class Form1
         Me.Button4.Text = "temp exoneration"
         Me.Button4.UseVisualStyleBackColor = True
         '
+        'ButtonIntegrationExo
+        '
+        Me.ButtonIntegrationExo.Location = New System.Drawing.Point(185, 296)
+        Me.ButtonIntegrationExo.Name = "ButtonIntegrationExo"
+        Me.ButtonIntegrationExo.Size = New System.Drawing.Size(102, 42)
+        Me.ButtonIntegrationExo.TabIndex = 12
+        Me.ButtonIntegrationExo.Text = "intégration art36 / exoneration"
+        Me.ButtonIntegrationExo.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(890, 519)
+        Me.Controls.Add(Me.ButtonIntegrationExo)
         Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.ButtonIntegration)
@@ -295,4 +306,5 @@ Partial Class Form1
     Friend WithEvents Button5 As System.Windows.Forms.Button
     Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
     Friend WithEvents Button4 As Button
+    Friend WithEvents ButtonIntegrationExo As Button
 End Class

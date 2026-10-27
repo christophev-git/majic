@@ -170,6 +170,7 @@
     <Compile Include="IM_TempArt36.vb" />
     <Compile Include="IM_TempArt60.vb" />
     <Compile Include="IM_tempexoneration.vb" />
+    <Compile Include="IntegrationExoneration.vb" />
     <Compile Include="LectureMajic.vb" />
     <Compile Include="IM_TempLocal.vb" />
     <Compile Include="IM_TempLotLocal.vb" />
